@@ -1,0 +1,9 @@
+{
+    "name" : "HypeSquadServer",
+    "version" : "0.0.1",
+    "dependencies" :
+    {
+        "http" : "latest",
+        "querystring" : "latest"
+    }
+}
