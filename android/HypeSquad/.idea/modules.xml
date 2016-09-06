@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/HypeSquad.iml" filepath="$PROJECT_DIR$/HypeSquad.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/okhttp-3.4.1/okhttp-3.4.1.iml" filepath="$PROJECT_DIR$/okhttp-3.4.1/okhttp-3.4.1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/okio-1.10.0/okio-1.10.0.iml" filepath="$PROJECT_DIR$/okio-1.10.0/okio-1.10.0.iml" />
-      <module fileurl="file://$PROJECT_DIR$/retrofit-2.1.0/retrofit-2.1.0.iml" filepath="$PROJECT_DIR$/retrofit-2.1.0/retrofit-2.1.0.iml" />
-      <module fileurl="file://$PROJECT_DIR$/volley/volley.iml" filepath="$PROJECT_DIR$/volley/volley.iml" />
-    </modules>
+    <modules />
   </component>
 </project>

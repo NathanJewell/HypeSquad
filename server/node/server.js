@@ -38,20 +38,10 @@ function handleRequest(request, response) {     //main server callback
             console.log("request: " + body);
             var json = JSON.parse(body);   //parse json from string
 
+        var methodComplete = true;  //var for storing wether or not client request was successful true by default
+
         if ("requestType" in json) {
             if(json.requestType == "pushnotify") {      //pushnotify means to send a specified data to clients
-              /*
-                requestJSON = {                         //construct request content
-                    "url" : "https://fcm.googleapis.com/fcm/send",
-                    "method" : "POST",
-                    "headers" : {"Content-Type" : "application/json", "Authorization":"key=AIzaSyCI-f6i9hYYRGEBYOKgzYRzSSVrbBQEzkg"},
-                    "body" :
-                    JSON.stringify ({
-                        "data" : { "message": json.messageString},
-                        "to" : devices[json.groupID][0],
-                    })
-                }
-                */
                 var data = qs.stringify(
                     {
                         "data" : {
@@ -67,9 +57,11 @@ function handleRequest(request, response) {     //main server callback
                   "method" : "POST",
                   "headers" : {
                     "Content-Type" : "application/json",
+                    "Authorization" : "key=AIzaSyCI-f6i9hYYRGEBYOKgzYRzSSVrbBQEzkg",
                     "Content-Length" : Buffer.byteLength(data)
                   }
                 }
+
                 console.log("Sending firebase api request with Options: " + JSON.stringify(options) + " JSON Body: " + data);
                 var req = http.request(options, (res) => {
                   console.log("STATUS: ${res.statusCode}");
@@ -84,23 +76,19 @@ function handleRequest(request, response) {     //main server callback
                 })
                 req.on("error", (e) => {       //if theres a problem creating the response log and error
                   console.log("Problem with request: ${e.message}");
+                  methodComplete = false;
                 });
                 req.write(data);    //write data
                 req.end();          //tell http that were done
 
+                //tell client that we sent the request
+                var responseJSON = {
+                  "methodComplete" : methodComplete,
+                  "groupID" : json.groupID,
+                  "verified" : "true"
+                }
 
-                /*
-                request(requestJSON , function(error, response, body) { //send api request
-                    if(error) {
-                        console.log("HELP");
-                        console.error(error, response, body);
-                    } else if (response.statusCode >= 400){
-                        console.error("HTTP ERROR: " + response.statusCode + " - " + response.statusMessage + "\n" + body);
-                    } else {
-                        console.log("Firebase request sent... MESSAGE: "); //?add message
-                    }
-                });
-                */
+                response.end(json.stringify(responseJSON)); //tell client what up
 
             } else if (json.requestType == "cheer") {
                 group = json.groupID
