@@ -32,22 +32,15 @@ function handleRequest(request, response) {     //main server callback
         var body = [];
         request.on('data', function(data) {
             body += data;   //add data to request body
-            //make sure there's not too much data
-            /*
-            if(body.length > 1e6) {
-                request.connection.destroy(); //ABORT
-            }
-            */
+            //TODO make sure there's not too much data
         });
         request.on('end', function() {
             console.log("request: " + body);
-            //body = qs.parse(body);              //stringifiy encoded request
-            var json = JSON.parse(body); //parse json from string
-
-
+            var json = JSON.parse(body);   //parse json from string
 
         if ("requestType" in json) {
             if(json.requestType == "pushnotify") {      //pushnotify means to send a specified data to clients
+              /*
                 requestJSON = {                         //construct request content
                     "url" : "https://fcm.googleapis.com/fcm/send",
                     "method" : "POST",
@@ -58,8 +51,43 @@ function handleRequest(request, response) {     //main server callback
                         "to" : devices[json.groupID][0],
                     })
                 }
-                console.log("Sending firebase api request with JSON: " + JSON.stringify(requestJSON));
-                http.request(requestJSON , function(error, response, body) { //send api request
+                */
+                var data = querystring.stringify({
+                  JSON.stringify({
+                    "data" : {
+                      "message" : json.messageString
+                    },
+                    "to" : devices[json.groupID][0]
+                  });
+                });
+                var options = {
+                  "host" : "fcm.googleapis.com",
+                  "path" : "/fcm/send",
+                  "method" : "POST",
+                  "protocol" : "https",
+                  "headers" : {
+                    "Content-Type" : "application/json",
+                    "Content-Length" : Buffer.byteLength(data);
+                  }
+                }
+                console.log("Sending firebase api request with Options: " + JSON.stringify(options) + " JSON Body: " + data);
+                http.request(options, (res) => {
+                  console.log("STATUS: ${res.statusCode}");
+                  console.log("HEADERS: ${JSON.stringify(res.headers)}");
+                  res.setEncoding('utf8');
+                  res.on('data', (chunk) => {
+                    console.log("BODY: ${chunk}");
+                  });
+                  res.on("end", () => {
+                    console.log("End of response data... ");
+                  })
+                }).on("error", (e) => {       //if theres a problem creating the response log and error
+                  console.log("Problem with request: ${e.message}");
+                }).write(data).end()          //write data and tell http that were done
+
+
+                /*
+                request(requestJSON , function(error, response, body) { //send api request
                     if(error) {
                         console.log("HELP");
                         console.error(error, response, body);
@@ -69,6 +97,7 @@ function handleRequest(request, response) {     //main server callback
                         console.log("Firebase request sent... MESSAGE: "); //?add message
                     }
                 });
+                */
 
             } else if (json.requestType == "cheer") {
                 group = json.groupID
@@ -87,7 +116,7 @@ function handleRequest(request, response) {     //main server callback
                     }
                     response.end(JSON.stringify(responseJSON)); //append verifcation to response
                 } else {                        //group doesn't exist
-                    var responseJSON =          //
+                    var responseJSON =          //construct failed authentication response
                     {
                         "verified" : "false",
                         "groupID" : json.groupID
