@@ -6,9 +6,9 @@ except ImportError:
     #P2
     import httplib as http_client
 http_client.HTTPConnection.debuglevel=1
-url = "http://54.245.50.37:8080"
+url = "http://54.186.0.28:8080"
 
-payload = {"groupID" : "HypeSquad"}
+payload = {"groupID" : "HypeSquad", "verified":"false"}
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)

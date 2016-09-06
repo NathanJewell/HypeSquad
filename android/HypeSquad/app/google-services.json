@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "95902985488",
+    "firebase_url": "https://hypesquad-8ab9e.firebaseio.com",
+    "project_id": "hypesquad-8ab9e",
+    "storage_bucket": "hypesquad-8ab9e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95902985488:android:567b5d79674e26b7",
+        "android_client_info": {
+          "package_name": "com.example.hypesquad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "95902985488-5nev7bngfmfac8610oh9kpj2oaccr3sq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh0rz9FDt_nv0_Uz3dHCiZptRqigA7qqQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

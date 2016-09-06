@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">HypeSquad</string>
+    <string name="edit_message">Enter Group ID</string>
+    <string name="button_send">Request Access</string>
+</resources>
