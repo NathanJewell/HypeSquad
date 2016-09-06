@@ -24,6 +24,8 @@ groups = {"HypeSquad" :
             "leader" : "JJ"
         };
 
+
+
 function handleRequest(request, response) {     //main server callback
     console.log("Requested")
     if(request.method == "GET" || request.method == "POST") {
@@ -44,56 +46,57 @@ function handleRequest(request, response) {     //main server callback
 
 
 
-            if("groupID" in json) {
+        if ("requestType" in json) {
+            if(json.requestType == "pushnotify") {      //pushnotify means to send a specified data to clients
+                requestJSON = {                         //construct request content
+                    "url" : "https://fcm.googleapis.com/fcm/send",
+                    "method" : "POST",
+                    "headers" : {"Content-Type" : "application/json", "Authorization":"key=AIzaSyCI-f6i9hYYRGEBYOKgzYRzSSVrbBQEzkg"},
+                    "body" :
+                    JSON.stringify ({
+                        "data" : { "message": json.messageString},
+                        "to" : devices[json.groupID][0],
+                    })
+                }
+                console.log("Sending firebase api request with JSON: " + JSON.stringify(requestJSON));
+                http.request(requestJSON , function(error, response, body) { //send api request
+                    if(error) {
+                        console.log("HELP");
+                        console.error(error, response, body);
+                    } else if (response.statusCode >= 400){
+                        console.error("HTTP ERROR: " + response.statusCode + " - " + response.statusMessage + "\n" + body);
+                    } else {
+                        console.log("Firebase request sent... MESSAGE: "); //?add message
+                    }
+                });
+
+            } else if (json.requestType == "cheer") {
+                group = json.groupID
+                //craft cheer response
+            } else if(json.requestType == "joingroup") {    //if the client is trying to join a group
                 response.setHeader('Content-Type', 'application/json');
-                if (groups[json.groupID]) {
-                    //add device to list
-                    //var groupJSON = JSON.stringify(groups[json.groupID]);
+                if (groups[json.groupID]) {     //see if group exists
+
                     console.log("Hello " + json.firetoken);
-                    devices[json.groupID].push(json.firetoken);   //add token to device list
-                    var responseJSON =
+
+                    devices[json.groupID].push(json.firetoken);   //add firebase token to device list
+                        var responseJSON =  //construct verification success response
                     {
                         "verified" : "true",
                         "groupID" : json.groupID
                     }
-                    response.end(JSON.stringify(responseJSON));
-                    //response.end("Group " + json.groupID + " found");
-                } else {
-                    var responseJSON =
+                    response.end(JSON.stringify(responseJSON)); //append verifcation to response
+                } else {                        //group doesn't exist
+                    var responseJSON =          //
                     {
                         "verified" : "false",
                         "groupID" : json.groupID
                     }
                     response.end(JSON.stringify(responseJSON));
                 }
-            } else if ("requestType" in json) {
-                if(json.requestType == "pushnotify") {      //pushnotify means to send a specified data to clients
-                    requestJSON = {                         //construct request content
-                        "url" : "https://fcm.googleapis.com/fcm/send",
-                        "method" : "POST",
-                        "headers" : {"Content-Type" : "application/json", "Authorization":"key=AIzaSyCI-f6i9hYYRGEBYOKgzYRzSSVrbBQEzkg"},
-                        "body" :
-                        JSON.stringify ({
-                            "data" { "message": json.messageString},
-                            "to" : devices[json.groupID][0],
-                        })
-                    }
-                    request(requestJSON , function(error, response, body) { //send api request
-                        if(error) {
-                            console.error(error, response, body);
-                        } else if (response.statusCode >= 400){
-                            console.error("HTTP ERROR: " + response.statusCode + " - " response.statusMessage + "\n" + body);
-                        } else {
-                            console.log("Firebase request sent... MESSAGE: "); //?add message
-                        }
-                    });
-
-                } else if (json.requestType == "cheer") {
-                    group = json.groupID
-                    //craft cheer response
-                }
-
             }
+
+        }
 
         });
       }
