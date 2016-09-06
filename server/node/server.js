@@ -88,7 +88,7 @@ function handleRequest(request, response) {     //main server callback
                   "verified" : "true"
                 }
 
-                response.end(json.stringify(responseJSON)); //tell client what up
+                response.end(JSON.stringify(responseJSON)); //tell client what up
 
             } else if (json.requestType == "cheer") {
                 group = json.groupID

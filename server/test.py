@@ -6,7 +6,7 @@ import requests, json, logging
     #P2
 #    import httplib as http_client
 #http_client.HTTPConnection.debuglevel=1
-url = "http://54.186.0.28:8080"
+url = "http://54.186.37.227:8080"
 
 payload = {
         "requestType" : "joingroup",
