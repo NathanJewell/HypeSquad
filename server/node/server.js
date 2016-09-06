@@ -52,26 +52,26 @@ function handleRequest(request, response) {     //main server callback
                     })
                 }
                 */
-                var data = querystring.stringify({
-                  JSON.stringify({
-                    "data" : {
-                      "message" : json.messageString
-                    },
-                    "to" : devices[json.groupID][0]
-                  });
-                });
+                var data = qs.stringify(
+                    {
+                        "data" : {
+                            "message" : json.messageString
+                        },
+                        "to" : devices[json.groupID][0]
+                    }
+                );
+
                 var options = {
                   "host" : "fcm.googleapis.com",
                   "path" : "/fcm/send",
                   "method" : "POST",
-                  "protocol" : "https",
                   "headers" : {
                     "Content-Type" : "application/json",
-                    "Content-Length" : Buffer.byteLength(data);
+                    "Content-Length" : Buffer.byteLength(data)
                   }
                 }
                 console.log("Sending firebase api request with Options: " + JSON.stringify(options) + " JSON Body: " + data);
-                http.request(options, (res) => {
+                var req = http.request(options, (res) => {
                   console.log("STATUS: ${res.statusCode}");
                   console.log("HEADERS: ${JSON.stringify(res.headers)}");
                   res.setEncoding('utf8');
@@ -81,9 +81,12 @@ function handleRequest(request, response) {     //main server callback
                   res.on("end", () => {
                     console.log("End of response data... ");
                   })
-                }).on("error", (e) => {       //if theres a problem creating the response log and error
+                })
+                req.on("error", (e) => {       //if theres a problem creating the response log and error
                   console.log("Problem with request: ${e.message}");
-                }).write(data).end()          //write data and tell http that were done
+                });
+                req.write(data);    //write data
+                req.end();          //tell http that were done
 
 
                 /*
