@@ -20,6 +20,12 @@ firebasePayload = {
         "messageString" : "This is from your master."
     }
 
+makegroup = {
+    "requestType" : "makegroup",
+    "groupID" : "HypeSquad"
+    "description" : "group for wilson basketball"
+}
+
 #logging.basicConfig()
 #logging.getLogger().setLevel(logging.DEBUG)
 #requests_log = logging.getLogger("requests.packages.urllib3")
