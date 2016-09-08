@@ -4,9 +4,6 @@ var request = require('request');   //used for sending requests to firebase
 
 const PORT = 8080;  //port for inbound http
 console.log(PORT);
-function makeGroup(id) {
-
-}
 
 devices = //storing firebase verification tokens
     {
@@ -159,9 +156,9 @@ function sendFirebaseMessage(group, data) {
       "verified" : "true"
     }
 
-    response.end(JSON.stringify(responseJSON)); //tell client what up
+    return JSON.stringify(responseJSON); //tell client what up
 
-}
+} //returns JSON
 
 function addClientToGroup(group, FBtoken) {
     response.setHeader('Content-Type', 'application/json');
@@ -180,10 +177,11 @@ function addClientToGroup(group, FBtoken) {
         var users = groups[group].users.parseInt();
         users += 1;
         groups[group].users = users.toString();
-    } else {                        //group doesn't exist
-        response.end(JSON.stringify(responseJSON));
-    }
-}
+    } else { ]                       //group doesn't exist
+
+    response.end(JSON.stringify(responseJSON)); //return JSON to tell client whats up with their request
+
+} //returns JSON
 
 function makeGroup(group, FBtoken) {
     if(!group in groups) {   //make sure group doesn't allready exists
@@ -222,7 +220,7 @@ function makeGroup(group, FBtoken) {
 
     }
     return responseJSON;
-}
+}   //returns JSON
 
 function handleRequest(request, response) {     //main server callback
     console.log("Requested")
@@ -238,15 +236,18 @@ function handleRequest(request, response) {     //main server callback
 
         var methodComplete = true;  //var for storing wether or not client request was successful true by default
 
-        if ("requestType" in json) {
-            if(json.requestType == "pushnotify") {      //pushnotify means to send a specified data to clients
-                response.end(sendFirebaseMessage(json.groupID, json.messageString));
-            } else if (json.requestType == "cheer") {
+        if ("type" in json) {
+            if("data" in json) {
+              json.data = JSON.parse(json.data);  //convert stringified data from client to useful json
+            }
+            if(json.type == "pushnotify") {      //pushnotify means to send a specified data to clients
+                response.end(sendFirebaseMessage(json.groupID, json.data.messageString));
+            } else if (json.type == "cheer") {
                 group = json.groupID
                 //craft cheer response
-            } else if(json.requestType == "joingroup") {    //if the client is trying to join a group
+            } else if(json.type == "joingroup") {    //if the client is trying to join a group
                 response.end(addClientToGroup(json.groupID, json.firetoken));
-            } else if(json.requestType == "makegroup") {
+            } else if(json.type == "makegroup") {
                 response.end(makeFirebaseGroup(json.groupID, json.firetoken));
             }
 

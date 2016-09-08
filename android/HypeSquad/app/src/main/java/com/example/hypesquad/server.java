@@ -10,6 +10,6 @@ import retrofit2.http.POST;
  */
 public interface server {
 
-    @POST("verifyGroup")
-    Call<group> verifyGroup(@Body group grp);
+    @POST("sendRequest")
+    Call<request> sendRequest(@Body request grpData);
 }

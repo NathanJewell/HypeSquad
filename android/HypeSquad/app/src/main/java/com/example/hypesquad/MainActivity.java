@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         //contact server and wait for verification that server has identified group ID and place the device in recieval list
         //RequestQueue queue = Volley.newRequestQueue(this); //create LOCAL !!! request Q
 
-        String url = "http://54.186.0.28:8080/";    //specify HARDCODED !!! server url
+        String url = "http://54.186.246.65:8080/";    //specify HARDCODED !!! server url
         String responseString = "";
         String FIREBASE_ID =  FirebaseInstanceId.getInstance().getToken();
 
@@ -90,28 +90,28 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         server api = retrofit.create(server.class);
-        group grp = new group(groupID, FIREBASE_ID);
+        request req = new request("joingroup", groupID, FIREBASE_ID);
 
-        Call<group> call = api.verifyGroup(grp);
-        call.enqueue(new Callback<group>() {
+        Call<request> call = api.sendRequest(req);
+        call.enqueue(new Callback<request>() {
             @Override
-            public void onResponse(Call<group> call, Response<group> response) {
-               group responseGroup = response.body();
+            public void onResponse(Call<request> call, Response<request> response) {
+                request responseData = response.body();
                 Gson gson = new Gson();
                 JSONObject responseJSON = new JSONObject();
                 try {
-                    responseJSON = new JSONObject(gson.toJson(responseGroup));
+                    responseJSON = new JSONObject(gson.toJson(responseData));
                 } catch (JSONException e) { Log.e("ERROR", "Converting JSON Response to JSON Object");}
                 Log.i("RESPONSE: ", responseJSON.toString());
-                if(responseGroup.verified)
+                if(responseData.verified)
                 {
                     startActivity(intent);
                 } else {
-                    Log.i("INFO", "Group " + responseGroup.groupID + " not availiable...");
+                    Log.i("INFO", "Group " + responseData.groupID + " not availiable...");
                 }
             }
             @Override
-            public void onFailure(Call<group> call, Throwable t) {Log.e("ERROR", "NO RESPONSE FROM GROUP SERVER");}
+            public void onFailure(Call<request> call, Throwable t) {Log.e("ERROR", "NO RESPONSE FROM GROUP SERVER");}
         });
 
     }
