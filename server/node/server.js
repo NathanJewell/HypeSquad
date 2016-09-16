@@ -1,6 +1,16 @@
 var http = require('http');
 var qs = require('querystring');    //used for parsing requests
 var request = require('request');   //used for sending requests to firebase
+var firebase = require("firebase");
+
+var fbConfig = {
+  apiKey: "AIzaSyBF37NU7bte97tlbNtLnAei-9zoeU_oETw",
+  authDomain: "hypesquad-8ab9e.firebaseapp.com",
+  databaseURL: "https://hypesquad-8ab9e.firebaseio.com",
+  storageBucket: "hypesquad-8ab9e.appspot.com",
+  messagingSenderId: "95902985488"
+};
+firebase.initializeApp(fbConfig);
 
 const PORT = 8080;  //port for inbound http
 console.log(PORT);
